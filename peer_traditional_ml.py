@@ -91,11 +91,15 @@ if __name__ == '__main__':
     print('Paper sections being used: %s' % sections)
 
     ml_model = args.model
-    assert ml_model in ['SVC-linear', 'SVC-poly' 'SVC-rbf', 'SVC-sigmoid', 'DT', 'RF', 'MLP', 'AdaBoost']
+    print('ML model: %s (%s)' % (ml_model, type(ml_model)))
+    if not ml_model.startswith('SVC-'):
+        assert ml_model in ['DT', 'RF', 'MLP', 'AdaBoost']
 
-    if ml_model.startswith('SVC'):
-        ml_model = ml_model.split('-')[0]
-        kernel = ml_model.split('-')[1]
+    kernel = None
+    if ml_model.startswith('SVC-'):
+        divided = ml_model.split('-')
+        ml_model = divided[0]
+        kernel = divided[1]
         #kernel = args.kernel
         assert kernel in ['linear', 'poly', 'rbf', 'sigmoid']
     
@@ -307,7 +311,7 @@ if __name__ == '__main__':
         fp = open(output_file, 'a')
         writer = csv.writer(fp)
         
-    writer.writerow([model, algorithm, args.merged_data.replace('.csv.gz', ''), numeric_info, sections, vector_size, num_folds, random_state, min_count, window, epochs, kernel, lemmatizer, min_df, max_df, ngram_max, mean_acc, stdev])
+    writer.writerow([ml_model, algorithm, args.merged_data.replace('.csv.gz', ''), numeric_info, sections, vector_size, num_folds, random_state, min_count, window, epochs, kernel, lemmatizer, min_df, max_df, ngram_max, mean_acc, stdev])
         
     fp.close()
     print('Produced CSV output to: %s' % output_file)
